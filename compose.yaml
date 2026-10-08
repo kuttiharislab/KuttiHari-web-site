@@ -1,0 +1,28 @@
+services:
+  web:
+    build: .
+    image: kuttihari-preview:2026-10-07
+    container_name: kuttihari-preview
+    restart: unless-stopped
+    ports:
+      - "10.1.1.253:8788:8080"
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:size=16m,uid=101,gid=101,mode=0750
+      - /var/run:size=1m,uid=101,gid=101,mode=0750
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+
